@@ -30,8 +30,6 @@ $new_page = end($new_page);
 
 $diff = Diff::compare($old_page, $new_page["content"]);
 $output = Diff::toString($diff);
-$test = "test";
-
 
 
 

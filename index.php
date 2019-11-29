@@ -1,68 +1,49 @@
 <?php
-require_once ("class.Diff.php");
-require_once ("notificator.php");
+require_once  ("config.php");
 
-$update = false;
-$changesUpdate = false;
+$update = true;
 
-$pdo = new PDO('mysql:host=localhost; dbname=stephan_projekt', 'root', NULL);
+for($i = 0; $i < count($page); $i++) {
 
+	// create 2 dimensional array with content per line and that the line has changed or not
+	$diff = Diff::compare($page[$i]["content_new"], $page[$i]["content_old"]);
+	var_dump($diff);
+	// creates a String with highlights on changed lines
+	$output = Diff::toString($diff);
 
-$new_page = file_get_contents('https://www.example.com/');
+	$textarray = [];
+	
+	// splits highlighted string in array again
+	foreach (preg_split("/((\r?\n)|(\r\n?))/", $output) as $line) {
+		$textarray[] = $line;
+	}
+	$changedContent = "";
+	$hasChanged = false;
 
-$content = $new_page;
-$time = time();
-$website = "https://google.com";
-
-$date = date("d.m.y", $time);
-
-if($update){
-	$statement = $pdo->prepare("INSERT INTO contents (content, date, website) VALUES (?, ?, ?)");
-	$statement->execute([$content, $time, $website]);
-}
-// array('content' => $content, 'date' => $date, 'website' => $website)
-
-
-$statement = $pdo->prepare("SELECT * FROM contents WHERE date = (SELECT MAX(date) FROM contents)");
-$statement->execute();
-$old_page = $statement->fetch(PDO::FETCH_ASSOC);
-
-//$new_page = file_get_contents('https://www.example.com/');
-
-
-$diff = Diff::compare($new_page, $old_page["content"]);
-$output = Diff::toString($diff);
-$textarray = [];
-
-foreach(preg_split("/((\r?\n)|(\r\n?))/", $output) as $line){
-    $textarray[] = $line;
-}
-$returnString = "";
-
-for($i = 0; $i < count($diff); $i++){
-	if($diff[$i][1] == 1 || $diff[$i][1] ==  2){
-		$returnString .= "<span style='width: 75px; display: inline-block;'>Line " . $i . ": </span>" . highlight_string($textarray[$i], true) . "<br/>";
-		if ($diff[$i][1] == 2){
-			$returnString .= "<br>";
+	// loops through $diff array and whereever a line is changed it takes the content of the formated string and safes it in $changedContent as String
+	for ($j = 0; $j < count($diff); $j++) {
+		if ($diff[$j][1] == 1 || $diff[$j][1] == 2) {
+			$hasChanged = true;
+			$changedContent .= "Line " . $j . ": " . highlight_string($textarray[$j], true) . "<br/>";
+			if ($diff[$j][1] == 2) {
+				$changedContent .= "<br>";
+			}
 		}
 	}
+	$page[$i]["content_changed"] = $changedContent;
+
+	$message = $page[$i]["content_changed"];
+
+	//sendeEmail($message, "stephan.klusowski@gmail.com", "test");
+
+	//var_dump(highlight_string($output));
+	
+	// TODO: If Ändern zum Check ob sich inhaltliche Änderungen ergeben haben
+	// Content , Time and SiteLink are written in the Database
+	if ($update && $hasChanged) {
+		updateContent($page[$i]["p_id"], $page[$i]["content_new"], $page[$i]["content_changed"], $page[$i]["time"]);
+	}
+	
+
 }
-//echo $returnString;
-
-if($changesUpdate){
-	$statement = $pdo->prepare("INSERT INTO changes (c_content, date, website) VALUES (?, ?, ?)");
-	$statement->execute([$returnString, $time, $website]);
-}
-
-$statement = $pdo->prepare("SELECT * FROM changes WHERE date = (SELECT MAX(date) FROM changes)");
-$statement->execute();
-$changes = $statement->fetch(PDO::FETCH_ASSOC);
-
-$message = $changes["c_content"];
-
-sendeEmail($message, "stephan.klusowski@gmail.com", "test");
-
-//var_dump(highlight_string($output));
-
-
 ?>

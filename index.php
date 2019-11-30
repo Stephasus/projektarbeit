@@ -1,49 +1,68 @@
 <?php
-require_once  ("config.php");
+$update = false;
+$sendeEmail = false;
+require_once("update.php");
 
-$update = true;
-
-for($i = 0; $i < count($page); $i++) {
-
-	// create 2 dimensional array with content per line and that the line has changed or not
-	$diff = Diff::compare($page[$i]["content_new"], $page[$i]["content_old"]);
-	var_dump($diff);
-	// creates a String with highlights on changed lines
-	$output = Diff::toString($diff);
-
-	$textarray = [];
-	
-	// splits highlighted string in array again
-	foreach (preg_split("/((\r?\n)|(\r\n?))/", $output) as $line) {
-		$textarray[] = $line;
-	}
-	$changedContent = "";
-	$hasChanged = false;
-
-	// loops through $diff array and whereever a line is changed it takes the content of the formated string and safes it in $changedContent as String
-	for ($j = 0; $j < count($diff); $j++) {
-		if ($diff[$j][1] == 1 || $diff[$j][1] == 2) {
-			$hasChanged = true;
-			$changedContent .= "Line " . $j . ": " . highlight_string($textarray[$j], true) . "<br/>";
-			if ($diff[$j][1] == 2) {
-				$changedContent .= "<br>";
-			}
-		}
-	}
-	$page[$i]["content_changed"] = $changedContent;
-
-	$message = $page[$i]["content_changed"];
-
-	//sendeEmail($message, "stephan.klusowski@gmail.com", "test");
-
-	//var_dump(highlight_string($output));
-	
-	// TODO: If Ändern zum Check ob sich inhaltliche Änderungen ergeben haben
-	// Content , Time and SiteLink are written in the Database
-	if ($update && $hasChanged) {
-		updateContent($page[$i]["p_id"], $page[$i]["content_new"], $page[$i]["content_changed"], $page[$i]["time"]);
-	}
-	
-
+if (isset($_POST["pagetitel"]) && isset($_POST["link"])) {
+	createNewProject($_POST["pagetitel"], $_POST["link"]);
+	$notice = true;
+}else{
+	$notice = false;
 }
+
 ?>
+<head>
+	<meta charset="utf-8">
+	<meta name="description" content="HTML - Checker">
+	<meta name="keywords" content="html">
+	<link rel="stylesheet" href="default.css">
+	<title>HTML - Checker</title>
+</head>
+<html>
+<body>
+<div class="container">
+	<h1>HTML - Checker</h1>
+	<h2>Create New Project to Check</h2>
+	<form method="post" action="index.php">
+		<div>
+			<label>Page Titel: </label><br><input type="text" name="pagetitel" required>
+		</div>
+		<div>
+			<label>Page Link: </label><br><input type="text" name="link" required>
+		</div>
+		<div>
+			<input class="button" type="submit" value="Submit">
+		</div>
+	</form>
+	<?php if ($notice) { ?>
+		<div class="notice">
+			<h3>Projekt wurde erfolgreich hinzugefügt! ^_^</h3>
+		</div>
+	<?php } ?>
+	<h2>Last Changes:</h2>
+	<table class="big-box">
+		<tbody>
+		<tr>
+			<th>Titel</th>
+			<th>Zeitpunkt der letzten Änderung</th>
+			<th>Inhaltliche Änderungen im Vergleich zur aktuellen Seite</th>
+			<th>Link</th>
+		</tr>
+		<?php for ($i = 0; $i < count($page); $i++) { ?>
+			<tr>
+				<?php
+				echo "<td>" . $page[$i]["titel"] . "</td>";
+				echo "<td>" . $page[$i]["date_old"] . "</td>";
+				if(empty($page[$i]["content_changed"])){
+					$page[$i]["content_changed"] = "Seit dem letzten Check gab es keine Änderungen";
+				}
+				echo "<td>" . $page[$i]["content_changed"] . "</td>";
+				echo "<td><a href='" . $page[$i]["link"] . "'>" . $page[$i]["link"] . "</a></td>";
+				?>
+			</tr>
+		<?php } ?>
+		</tbody>
+	</table>
+</div>
+</body>
+</html>

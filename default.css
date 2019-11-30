@@ -1,0 +1,88 @@
+html, body{
+	max-width: 100%;
+	background: black;
+	overflow-x: hidden;
+	color: white;
+}
+a{
+	color: white;
+}
+h1,h2{
+	text-align: center;
+	margin: 2rem 1rem;
+	color: white;
+}
+h2{
+	border-top: 2px solid white;
+	padding-top: 2rem;
+}
+.big-box{
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	background: #001e35;
+}
+.big-box tbody{
+	width: 100%;
+	padding: .3rem;
+}
+.big-box tr{
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+}
+.big-box th, .big-box td{
+	display: inline-block;
+	width: 15%;
+	background: #545454;
+	margin: .5rem auto;
+	padding: .5rem;
+	text-align: left;
+	border-radius: 5px;
+}
+.big-box th:nth-of-type(3), .big-box td:nth-of-type(3){
+	width: 50%;
+}
+code span{
+	color: white !important;
+}
+.notice{
+	width: 100%;
+	display: block;
+	background: #001E35;
+	text-align: center;
+	padding: .2rem;
+}
+form{
+	display: block;
+}
+form label{
+	background: #001E35;
+	padding: .1rem 0;
+	display: inline-block;
+	width: 200px;
+}
+form input{
+	width: 200px;
+}
+form div{
+	width: 100%;
+	display: inline-block;
+	margin: .2rem auto;
+	text-align: center;
+}
+
+.button {
+  background-color: #545454;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+.button:hover{
+	background: #1d1d1d;
+	cursor: pointer;
+}

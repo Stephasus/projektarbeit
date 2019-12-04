@@ -1,15 +1,17 @@
 <?php
 
-$pdo = new PDO('mysql:host=localhost; dbname=stephan_projekt', 'root', NULL);
+$pdo = new PDO('mysql:host=localhost; dbname=stephan_projekt', 'root', null);
 
-function updateContent($p_id, $content, $c_content, $time){
-	GLOBAL $pdo;
-	$statement = $pdo->prepare("INSERT INTO updates (p_id, content, changed_content, timestamp) VALUES (?, ?, ?, ?)");
-	$statement->execute([$p_id, $content,$c_content, $time]);
+function updateContent(PDO $pdo,$p_id, $content, $c_content, $time) {
+	$statement = $pdo->prepare(
+	"
+					INSERT INTO updates 
+					(p_id, content, changed_content, timestamp) 
+					VALUES (?, ?, ?, ?)");
+	$statement->execute([$p_id, $content, $c_content, $time]);
 }
 
-function getData($p_id){
-	GLOBAL $pdo;
+function getData(PDO $pdo, $p_id) {
 	$statement = $pdo->prepare(
 	"	SELECT * 
 				FROM updates 
@@ -18,8 +20,7 @@ function getData($p_id){
 	return $statement->fetch(PDO::FETCH_ASSOC);
 }
 
-function getProjectData($p_id){
-	GLOBAL $pdo;
+function getProjectData(PDO $pdo, $p_id) {
 	$statement = $pdo->prepare(
 	"	SELECT * 
 				FROM projects
@@ -28,16 +29,14 @@ function getProjectData($p_id){
 	return $statement->fetch(PDO::FETCH_ASSOC);
 }
 
-function countProjects(){
-	GLOBAL $pdo;
+function countProjects(PDO $pdo) {
 	$statement = $pdo->prepare(
 	"SELECT count(p_id) AS count FROM projects");
 	$statement->execute();
 	return $statement->fetch(PDO::FETCH_ASSOC);
 }
 
-function createNewProject($newProjectName, $websiteLink){
-	GLOBAL $pdo;
-	$statement = $pdo->prepare("INSERT INTO projects (titel, link) VALUES (?, ?)");
-	$statement->execute([$newProjectName, $websiteLink]);
+function createNewProject(PDO $pdo, $newProjectName, $websiteLink, $email) {
+	$statement = $pdo->prepare("INSERT INTO projects (titel,link,email) VALUES (?, ?, ?)");
+	$statement->execute([$newProjectName, $websiteLink, $email]);
 }

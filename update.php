@@ -1,21 +1,18 @@
 <?php
-require_once  ("config.php");
+require_once("config.php");
 
-if(!isset($update)&& !isset($sendeEmail)){
+if (!isset($update)) {
 	$update = true;
-	$sendeEmail = true;
 }
 
-for($i = 0; $i < count($page); $i++) {
-	
+for ($i = 0; $i < count($page); $i++) {
+
 	// create 2 dimensional array with content per line and that the line has changed or not
 	$diff = Diff::compare($page[$i]["content_new"], $page[$i]["content_old"]);
-	
 	// creates a String with highlights on changed lines
 	$output = Diff::toString($diff);
 
 	$textarray = [];
-	
 	// splits highlighted string in array again
 	foreach (preg_split("/((\r?\n)|(\r\n?))/", $output) as $line) {
 		$textarray[] = $line;
@@ -23,7 +20,8 @@ for($i = 0; $i < count($page); $i++) {
 	$changedContent = "";
 	$hasChanged = false;
 
-	// loops through $diff array and whereever a line is changed it takes the content of the formated string and safes it in $changedContent as String
+	// loops through $diff array and where ever a line is changed it takes the content of the formated string
+	// and safes it in $changedContent as String
 	for ($j = 0; $j < count($diff); $j++) {
 		if ($diff[$j][1] == 1 || $diff[$j][1] == 2) {
 			$hasChanged = true;
@@ -35,14 +33,9 @@ for($i = 0; $i < count($page); $i++) {
 	}
 	$page[$i]["content_changed"] = $changedContent;
 
-	
-	if ($sendeEmail){
-		sendeEmail($page[$i], "stephan.klusowski@gmail.com", "test");
-	}
-
 	// Content , Time and SiteLink are written in the Database
 	if ($update && $hasChanged) {
-		updateContent($page[$i]["p_id"], $page[$i]["content_new"], $page[$i]["content_changed"], $page[$i]["time_new"]);
+		sendEmail($page[$i], $page[$i]["email"], "Update für das Projekt: " . $page[$i]["titel"]);
+		updateContent($pdo, $page[$i]["p_id"], $page[$i]["content_new"], $page[$i]["content_changed"], $page[$i]["time_new"]);
 	}
 }
-

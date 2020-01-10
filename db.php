@@ -1,11 +1,10 @@
 <?php
 
-$pdo = new PDO('mysql:host=localhost; dbname=stephan_projekt', 'root', null);
+$pdo = new PDO('mysql:host=db; dbname=htmlchecker_269', 'htmlchecker_269', "cdemwyBUW8");
 
 function updateContent(PDO $pdo,$p_id, $content, $c_content, $time) {
 	$statement = $pdo->prepare(
-	"
-					INSERT INTO updates 
+	"		INSERT INTO updates 
 					(p_id, content, changed_content, timestamp) 
 					VALUES (?, ?, ?, ?)");
 	$statement->execute([$p_id, $content, $c_content, $time]);

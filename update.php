@@ -5,10 +5,10 @@ if (!isset($update)) {
 	$update = true;
 }
 
-for ($i = 0; $i < count($page); $i++) {
 
+for ($i = 0; $i < count($page); $i++) {
 	// create 2 dimensional array with content per line and that the line has changed or not
-	$diff = Diff::compare($page[$i]["content_new"], $page[$i]["content_old"]);
+	$diff = Diff::compare($page[$i]["content_old"], $page[$i]["content_new"]);
 	// creates a String with highlights on changed lines
 	$output = Diff::toString($diff);
 
@@ -32,7 +32,6 @@ for ($i = 0; $i < count($page); $i++) {
 		}
 	}
 	$page[$i]["content_changed"] = $changedContent;
-
 	// Content , Time and SiteLink are written in the Database
 	if ($update && $hasChanged) {
 		sendEmail($page[$i], $page[$i]["email"], "Update für das Projekt: " . $page[$i]["titel"]);

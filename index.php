@@ -60,6 +60,7 @@ if (isset($_POST["pagetitel"]) && isset($_POST["link"]) && isset($_POST["email"]
 							$page[$i]["content_changed"] = "Seit dem letzten Check gab es keine Änderungen";
 						}
 						echo "<td>" . $page[$i]["content_changed"] . "</td>";
+//						echo "<td>" . highlight_string($page[$i]["content_new"], true) . "</td>";
 						echo "<td><a href='" . $page[$i]["link"] . "'>" . $page[$i]["link"] . "</a></td>";
 						?>
 					</tr>

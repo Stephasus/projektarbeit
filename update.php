@@ -26,9 +26,9 @@ for ($i = 0; $i < count($page); $i++) {
 		if ($diff[$j][1] == 1 || $diff[$j][1] == 2) {
 			$hasChanged = true;
 			$changedContent .= "Line " . $j . ": " . highlight_string($textarray[$j], true) . "<br/>";
-			if ($diff[$j][1] == 2) {
-				$changedContent .= "<br>";
-			}
+//			if ($diff[$j][1] == 2) {
+//				$changedContent .= "<br>";
+//			}
 		}
 	}
 	$page[$i]["content_changed"] = $changedContent;

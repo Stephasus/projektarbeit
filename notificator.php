@@ -8,8 +8,8 @@ function sendEmail($message, $to, $subject){
 	
 	$header  = "MIME-Version: 1.0\r\n";
 	$header .= "Content-type: text/html; charset=utf-8\r\n";
-	$header .= "From: notificator@symbolic.com\r\n";
-	$header .= "Reply-To: notificator@symbolic.com.com\r\n";
+	$header .= "From: no@reply.com\r\n";
+	$header .= "Reply-To: no@reply.com\r\n";
 	// $header .= "Cc: $cc\r\n";  // falls an CC gesendet werden soll
 	$header .= "X-Mailer: PHP ". phpversion();
 	
